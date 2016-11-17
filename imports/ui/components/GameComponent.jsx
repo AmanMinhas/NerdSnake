@@ -21,17 +21,13 @@ screenIsMobile = () => {
 }
 
 gameComponentLoaded = () => {
-	console.log("I Loaded");
+	// console.log("I Loaded");
 }
 
 export class GameComponent extends TrackerReact(Component) {
 	
 	constructor() {
 		super()
-
-		$(".game-component").on("load",function(){
-			console.log("I Loaded");
-		});
 
 		$("body").on("load",function(){
 			console.log("Body Loaded");
