@@ -19,7 +19,7 @@
 	<script>
 		window.fbAsyncInit = function() {
 			FB.init({
-				appId      : '814496948654087',
+				appId      : Meteor.settings.public.fb_app_id,
 				xfbml      : true,
 				version    : 'v2.8'
 			});
