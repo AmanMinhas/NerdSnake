@@ -475,7 +475,7 @@ export class GameComponent extends TrackerReact(Component) {
 
 		// //console.log(templateInstance.Snake.get("snake").degreeOfFreedom);
 
-		oSnake = this.RD_Snake.get("oSnake");
+		let oSnake = this.RD_Snake.get("oSnake");
 
 		let jsonNewBeginning = this.getNewHead(oSnake.arrBodyData[0],oSnake.strHeading);
 
@@ -642,7 +642,7 @@ export class GameComponent extends TrackerReact(Component) {
 			]
 		};
 
-		console.log(strQuery);
+		// console.log(strQuery);
 		let numColCount = cQA.find(strQuery).count();
 
 		// console.log("Questiong left ", numColCount);
@@ -683,7 +683,7 @@ export class GameComponent extends TrackerReact(Component) {
 		// numCurrActiveQAIndex = templateInstance.QASettings.get("numCurrActiveQAIndex");
 		// jsonCurrActiveQuestion = jsonQA[numCurrActiveQAIndex];	
 		let jsonCurrActiveQuestion = this.RD_QASettings.get("jsonCurrActiveQA");;	
-		let arrFoodCoordinates = this.getRandomCoordinatesOnBoard(jsonCurrActiveQuestion.arrAnswers.length);
+		let arrFoodCoordinates = this.getFoodCoordinatesOnBoard(jsonCurrActiveQuestion.arrAnswers.length);
 
 		let i = 0;
 		let boolIsCorrect = 0;
@@ -717,7 +717,58 @@ export class GameComponent extends TrackerReact(Component) {
 
 		// //console.log("Food ",arrFoodOnBoardResult);
 	}
+	
+	/*Makes sure that the food is not in snakes path after gobble*/
+	getFoodCoordinatesOnBoard(numCount) {
+		
+		let oSnake = this.RD_Snake.get("oSnake");
+		let strDirection = oSnake.strHeading;
+		let jsonCurrHead = oSnake.arrBodyData[0];
 
+		let numLowerlimit = 0;
+		let numUpperLimit = this.oSettings.numBoardSize/this.oSettings.numBoxSize - this.oSettings.numBoxSize;
+
+		let arrRamdomCoordinates = [];
+
+		for (let i = 0; i < numCount; i++ ){
+			
+			while(true) {
+			
+				let jsonCoordinate = { 
+					x: Math.floor((Math.random()*numUpperLimit)+1) , 
+					y: Math.floor((Math.random()*numUpperLimit)+1)
+				};
+
+				/*Check that new food is not in the same vector in which the snake is moving*/
+				switch(strDirection) {
+					case 'up':
+						if((jsonCoordinate.y <= jsonCurrHead.y) && (jsonCoordinate.x == jsonCurrHead.x)) continue;
+						break;
+					case 'right':
+						if((jsonCoordinate.x >= jsonCurrHead.x) && (jsonCoordinate.y == jsonCurrHead.y))  continue;
+						break;
+					case 'down':
+						if((jsonCoordinate.y >= jsonCurrHead.y) && (jsonCoordinate.x == jsonCurrHead.x)) continue;
+						break;
+					case 'left':
+						if((jsonCoordinate.x <= jsonCurrHead.x) && (jsonCoordinate.y == jsonCurrHead.y)) continue;
+						break;
+				}
+
+				//Check if value exists in Array.
+				if (!this.coordinateInArray(jsonCoordinate, arrRamdomCoordinates)) {
+					// not in array.
+					arrRamdomCoordinates.push(jsonCoordinate);
+					break;
+				}
+			}
+
+		}
+
+		return arrRamdomCoordinates;
+	}
+
+	/*
 	getRandomCoordinatesOnBoard(numCount) {
 		
 		let numLowerlimit = 0;
@@ -745,6 +796,7 @@ export class GameComponent extends TrackerReact(Component) {
 
 		return arrRamdomCoordinates;
 	}
+	*/
 
 	foodOnBoard() {
 		//console.log(Template.instance().FoodSettings.get("arrFoodOnBoard"));
